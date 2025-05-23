@@ -22,7 +22,7 @@ let niche = "random";
 let blinkTimer;
 const app = chrome || browser;
 const devices = [];
-const myURLs = ["https://rewards.bing.com/"];
+const myURLs = ["https://www.google.com/"];
 
 app.runtime.onInstalled.addListener((e) => {
 	if (e.reason === "install") {
