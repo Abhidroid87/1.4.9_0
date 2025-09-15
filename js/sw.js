@@ -22,7 +22,7 @@ let niche = "random";
 let blinkTimer;
 const app = chrome || browser;
 const devices = [];
-const myURLs = ["https://www.google.com/"];
+const myURLs = ["https://rewards.bing.com/"];
 
 app.runtime.onInstalled.addListener((e) => {
 	if (e.reason === "install") {
@@ -537,4 +537,16 @@ app.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 	} else if (request.message === "scheduleUpdate") {
 		await fetchStorage();
 	}
+});
+
+
+// Trigger searches when rewards.bing.com loads
+app.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.url && tab.url.includes("https://brave.com/")) {
+        console.log("Rewards page loaded, triggering auto-search");
+        await fetchStorage();
+        if (!runningSearch && scheduleDefault != "scheduleT1") {
+            initializeSearches(scheduleDesktop, scheduleMobile, scheduleMin, scheduleMax);
+        }
+    }
 });
