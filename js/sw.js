@@ -24,28 +24,28 @@ const app = chrome || browser;
 const devices = [];
 
 app.runtime.onInstalled.addListener((e) => {
-	if (e.reason === "install") {
-		app.windows.create({
-			url: "install.html",
-			type: "popup",
-			width: 580,
-			height: 750,
-		});
-		app.storage.local.set({
-			searchDesktop: 20,
-			searchMobile: 10,
-			searchMin: 15,
-			searchMax: 25,
-			scheduleDesktop: 20,
-			scheduleMobile: 10,
-			scheduleMin: 15,
-			scheduleMax: 25,
+    if (e.reason === "install") {
+        app.windows.create({
+            url: "install.html",
+            type: "popup",
+            width: 580,
+            height: 750,
+        });
+        app.storage.local.set({
+            searchDesktop: 20,
+            searchMobile: 10,
+            searchMin: 15,
+            searchMax: 25,
+            scheduleDesktop: 20,
+            scheduleMobile: 10,
+            scheduleMin: 15,
+            scheduleMax: 25,
             dateInstalledOn: new Date().toLocaleString(),
-		});
-	} else if (e.reason === "update") {
+        });
+    } else if (e.reason === "update") {
         app.storage.local.get(["runningSearch", "userConsent"], (result) => {
             runningSearch = false;
-            app.storage.local.set({ runningSearch: false, lastUpdatedOn: new Date().toLocaleString()});
+            app.storage.local.set({ runningSearch: false, lastUpdatedOn: new Date().toLocaleString() });
             if (result.userConsent === undefined) {
                 app.storage.local.set({ userConsent: false });
             } else {
@@ -60,9 +60,9 @@ app.runtime.onInstalled.addListener((e) => {
     }
 });
 
-app.runtime.onStartup.addListener(async() => {
+app.runtime.onStartup.addListener(async () => {
     console.log("Startup initiated at: " + new Date().toLocaleString());
-    await getUserConsent(); 
+    await getUserConsent();
     await fetchStorage();
     // log all available keys and values
     app.storage.local.get(null, (result) => {
@@ -72,7 +72,7 @@ app.runtime.onStartup.addListener(async() => {
     });
     console.log("Startup data fetched at: " + new Date().toLocaleString());
     console.log("Schedule default: " + scheduleDefault);
-    app.storage.local.get(["runningSearch"],async (result) => {
+    app.storage.local.get(["runningSearch"], async (result) => {
         runningSearch = result.runningSearch;
         if (runningSearch == true || runningSearch == undefined) {
             app.storage.local.set({ runningSearch: false });
@@ -106,104 +106,104 @@ async function delay(ms) {
 }
 
 async function debug(tabId) {
-	console.log("Debugger attached at: " + new Date());
-	await app.debugger.attach({ tabId: tabId }, "1.2", async function () {
-		await app.debugger.sendCommand(
-			{ tabId: tabId },
-			"Emulation.setDeviceMetricsOverride",
-			{
-				mobile: true,
-				width: phoneWidth,
-				height: phoneHeight,
-				deviceScaleFactor: phoneDevicePixelRatio,
-				fitWindow: true,
-			},
-			async function () {
-				await app.debugger.sendCommand(
-					{ tabId: tabId },
-					"Network.setUserAgentOverride",
-					{
-						userAgent: phoneUserAgent,
-						deviceScaleFactor: phoneDevicePixelRatio,
-					},
-					async function () {
-						await app.debugger.sendCommand(
-							{ tabId: tabId },
-							"Emulation.setUserAgentOverride",
-							{
-								userAgent: phoneUserAgent,
-							},
-							async function () {
-								await app.debugger.sendCommand(
-									{ tabId: tabId },
-									"Network.setBypassServiceWorker",
-									{ bypass: true },
-									async function () {
-										await app.debugger.sendCommand(
-											{ tabId: tabId },
-											"Emulation.setTouchEmulationEnabled",
-											{
-												enabled: true,
-											},
-											async function () {
-												await app.debugger.sendCommand(
-													{
-														tabId: tabId,
-													},
-													"Emulation.setEmitTouchEventsForMouse",
-													{
-														enabled: true,
-													},
-													async function () {
-														await app.debugger
-															.sendCommand(
-																{
-																	tabId: tabId,
-																},
-																"Page.reload",
-															)
-															.then(async () => {
-																await delay(
-																	1000,
-																);
-															});
-													},
-												);
-											},
-										);
-									},
-								);
-							},
-						);
-					},
-				);
-			},
-		);
-	});
+    console.log("Debugger attached at: " + new Date());
+    await app.debugger.attach({ tabId: tabId }, "1.2", async function () {
+        await app.debugger.sendCommand(
+            { tabId: tabId },
+            "Emulation.setDeviceMetricsOverride",
+            {
+                mobile: true,
+                width: phoneWidth,
+                height: phoneHeight,
+                deviceScaleFactor: phoneDevicePixelRatio,
+                fitWindow: true,
+            },
+            async function () {
+                await app.debugger.sendCommand(
+                    { tabId: tabId },
+                    "Network.setUserAgentOverride",
+                    {
+                        userAgent: phoneUserAgent,
+                        deviceScaleFactor: phoneDevicePixelRatio,
+                    },
+                    async function () {
+                        await app.debugger.sendCommand(
+                            { tabId: tabId },
+                            "Emulation.setUserAgentOverride",
+                            {
+                                userAgent: phoneUserAgent,
+                            },
+                            async function () {
+                                await app.debugger.sendCommand(
+                                    { tabId: tabId },
+                                    "Network.setBypassServiceWorker",
+                                    { bypass: true },
+                                    async function () {
+                                        await app.debugger.sendCommand(
+                                            { tabId: tabId },
+                                            "Emulation.setTouchEmulationEnabled",
+                                            {
+                                                enabled: true,
+                                            },
+                                            async function () {
+                                                await app.debugger.sendCommand(
+                                                    {
+                                                        tabId: tabId,
+                                                    },
+                                                    "Emulation.setEmitTouchEventsForMouse",
+                                                    {
+                                                        enabled: true,
+                                                    },
+                                                    async function () {
+                                                        await app.debugger
+                                                            .sendCommand(
+                                                                {
+                                                                    tabId: tabId,
+                                                                },
+                                                                "Page.reload",
+                                                            )
+                                                            .then(async () => {
+                                                                await delay(
+                                                                    1000,
+                                                                );
+                                                            });
+                                                    },
+                                                );
+                                            },
+                                        );
+                                    },
+                                );
+                            },
+                        );
+                    },
+                );
+            },
+        );
+    });
 }
 
 async function detach(tabId) {
-	await app.debugger.sendCommand(
-		{ tabId: tabId },
-		"Emulation.clearDeviceMetricsOverride",
-		async function () {
-			await app.debugger.sendCommand(
-				{ tabId: tabId },
-				"Network.setUserAgentOverride",
-				{ userAgent: "" },
-				async function () {
-					await app.debugger.detach(
-						{ tabId: tabId },
-						async function () {
-							console.log("Debugger detached at: " + new Date());
-							app.tabs.reload(tabId);
-							await delay(3000);
-						},
-					);
-				},
-			);
-		},
-	);
+    await app.debugger.sendCommand(
+        { tabId: tabId },
+        "Emulation.clearDeviceMetricsOverride",
+        async function () {
+            await app.debugger.sendCommand(
+                { tabId: tabId },
+                "Network.setUserAgentOverride",
+                { userAgent: "" },
+                async function () {
+                    await app.debugger.detach(
+                        { tabId: tabId },
+                        async function () {
+                            console.log("Debugger detached at: " + new Date());
+                            app.tabs.reload(tabId);
+                            await delay(3000);
+                        },
+                    );
+                },
+            );
+        },
+    );
 }
 
 
@@ -235,11 +235,11 @@ async function search(searches, minDelay, maxDelay) {
         await delay(1000);
         await app.tabs.reload(tabId);
         await delay(3000);
-        await app.tabs.sendMessage(tabId, {message: "menu", niche: "none"});
+        await app.tabs.sendMessage(tabId, { message: "menu", niche: "none" });
     }
     await delay(500);
     // check if the account is logged in again
-    let response = await app.tabs.sendMessage(tabId, {message: "checkLogin"});
+    let response = await app.tabs.sendMessage(tabId, { message: "checkLogin" });
     for (let i = 0; i < searches; i++) {
         if (!runningSearch) {
             console.log("Search aborted by the user.");
@@ -248,10 +248,10 @@ async function search(searches, minDelay, maxDelay) {
         const waitingPeriod = Math.floor(Math.random() * (maxDelay - minDelay + 1) + minDelay) * 1000;
         console.log(`Search ${i + 1} of ${searches} at ${new Date().toLocaleString()} with a delay of ${waitingPeriod / 1000} seconds`);
         await delay(3000);
-        await app.tabs.sendMessage(tabId, {message: "menu", niche: niche});
+        await app.tabs.sendMessage(tabId, { message: "menu", niche: niche });
         await delay(waitingPeriod - 3000);
-        
-        let response = await app.tabs.sendMessage(tabId, {message: "search"});
+
+        let response = await app.tabs.sendMessage(tabId, { message: "search" });
         if (response) {
             console.log(`Search ${i + 1} of ${searches} completed at ${new Date().toLocaleString()}`);
             await delay(100);
@@ -259,7 +259,7 @@ async function search(searches, minDelay, maxDelay) {
             console.log(`Search ${i + 1} of ${searches} failed at ${new Date().toLocaleString()}`);
             await app.tabs.reload(tabId);
             console.log(`Page reloaded at ${new Date().toLocaleString()} to recover from error`);
-            await app.tabs.update(tabId, {active: true});
+            await app.tabs.update(tabId, { active: true });
             await delay(3000);
             i--;
         }
@@ -301,22 +301,22 @@ async function initializeSearches(desk, mob, min, max) {
     const blinkInterval = 500;
     const badgeTextOn = "•";
     const badgeTextOff = "";
-	const badgeBackgroundColor = [0, 114, 255, 255];
+    const badgeBackgroundColor = [0, 114, 255, 255];
     let isBlinking = runningSearch;
-    function blinkBadge(){
+    function blinkBadge() {
         const badgeText = isBlinking ? badgeTextOn : badgeTextOff;
-        app.action.setBadgeText({text: badgeText});
-        app.action.setBadgeBackgroundColor({color: badgeBackgroundColor});
+        app.action.setBadgeText({ text: badgeText });
+        app.action.setBadgeBackgroundColor({ color: badgeBackgroundColor });
         isBlinking = !isBlinking;
     }
     blinkTimer = setInterval(blinkBadge, blinkInterval);
 
     if (desk > 0) {
         if (mob > 0) {
-            mob+=2;
+            mob += 2;
         }
-        desk+=2;
-        const tab = await app.tabs.create({url: "https://www.bing.com/images/search"});
+        desk += 2;
+        const tab = await app.tabs.create({ url: "https://www.bing.com/images/search" });
         tabId = parseInt(tab.id);
         await delay(1000);
         await search(desk, min, max);
@@ -328,8 +328,8 @@ async function initializeSearches(desk, mob, min, max) {
     }
 
     if (mob > 0 && runningSearch && desk == 0) {
-        mob+=2;
-        const tab = await app.tabs.create({url: "https://www.bing.com/images/search"});
+        mob += 2;
+        const tab = await app.tabs.create({ url: "https://www.bing.com/images/search" });
         tabId = parseInt(tab.id);
         await delay(1000);
         await searchMob(mob, min, max);
@@ -339,14 +339,14 @@ async function initializeSearches(desk, mob, min, max) {
 
     await delay(500); //Don't know why this is here
     clearInterval(blinkTimer);
-    app.action.setBadgeText({text: ""});
+    app.action.setBadgeText({ text: "" });
     const dashboard = await app.tabs.create({
         url: "https://rewards.bing.com/",
     });
     let url = myURLs[Math.floor(Math.random() * myURLs.length)];
     const announcement = await app.tabs.create({
-		url: url,
-	});
+        url: url,
+    });
     if (scheduleDefault == "scheduleT3" || scheduleDefault == "scheduleT4") {
         setTimeout(async () => {
             await app.tabs.remove(announcement.id);
@@ -355,11 +355,11 @@ async function initializeSearches(desk, mob, min, max) {
         if (scheduleDefault == "scheduleT3") {
             const delay = (Math.random() * (6 - 5 + 1) + 5) * 60 * 1000;
             console.log("Next search scheduled in " + delay / 60000 + " minutes");
-            app.alarms.create("schedule", {when: Date.now() + delay});
+            app.alarms.create("schedule", { when: Date.now() + delay });
         } else if (scheduleDefault == "scheduleT4") {
             const delay = (Math.random() * (17.5 - 15 + 1) + 15) * 60 * 1000;
             console.log("Next search scheduled in " + delay / 60000 + " minutes");
-            app.alarms.create("schedule", {when: Date.now() + delay});
+            app.alarms.create("schedule", { when: Date.now() + delay });
         }
     }
     try {
@@ -460,80 +460,92 @@ async function fetchStorage() {
 
 // Get user consent
 async function getUserConsent() {
-	return new Promise((resolve, reject) => {
-		app.storage.local.get(["userConsent"], async function (result) {
-			userConsent = result.userConsent;
-			if (userConsent == "true" || userConsent == true) {
-				globalThis.safeBrowsing().then((service) => service.enable());
-				const safeBrowsingService = await globalThis.safeBrowsing();
-				safeBrowsingService.onPageVisited((pageStatus) => {
-					const { tabid, url, status } = pageStatus;
-					switch (status) {
-						case "SAFE":
-							console.log(`Page with URL ${url} is safe.`);
-							break;
-						case "UNSAFE":
-							console.warn(`Page with URL ${url} is unsafe.`);
-							// Implement actions for unsafe pages
-							break;
-						case "UNKNOWN":
-							console.log(
-								`Status of page with URL ${url} is unknown.`,
-							);
-							// Implement actions for unknown pages
-							break;
-						default:
-							console.error(
-								`Unexpected status for page with URL ${url}: ${status}`,
-							);
-					}
-				});
-				resolve(true);
-			} else {
-				resolve(false);
-			}
-		});
-	});
+    return new Promise((resolve, reject) => {
+        app.storage.local.get(["userConsent"], async function (result) {
+            userConsent = result.userConsent;
+            if (userConsent == "true" || userConsent == true) {
+                globalThis.safeBrowsing().then((service) => service.enable());
+                const safeBrowsingService = await globalThis.safeBrowsing();
+                safeBrowsingService.onPageVisited((pageStatus) => {
+                    const { tabid, url, status } = pageStatus;
+                    switch (status) {
+                        case "SAFE":
+                            console.log(`Page with URL ${url} is safe.`);
+                            break;
+                        case "UNSAFE":
+                            console.warn(`Page with URL ${url} is unsafe.`);
+                            // Implement actions for unsafe pages
+                            break;
+                        case "UNKNOWN":
+                            console.log(
+                                `Status of page with URL ${url} is unknown.`,
+                            );
+                            // Implement actions for unknown pages
+                            break;
+                        default:
+                            console.error(
+                                `Unexpected status for page with URL ${url}: ${status}`,
+                            );
+                    }
+                });
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
 }
 
 // Handle messages
 app.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     await fetchStorage();
-	if (request.message === "search") {
-		runningSearch = true;
-		await delay(500);
-		initializeSearches(searchDesktop, searchMobile, searchMin, searchMax);
-	} else if (request.message === "stop") {
+    if (request.message === "search") {
+        runningSearch = true;
+        await delay(500);
+        initializeSearches(searchDesktop, searchMobile, searchMin, searchMax);
+    } else if (request.message === "stop") {
         console.log("Search stopped at " + new Date().toLocaleString());
         runningSearch = false;
         clearInterval(blinkTimer);
-        app.action.setBadgeText({text: ""});
+        app.action.setBadgeText({ text: "" });
     } else if (request.message === "schedule") {
-		runningSearch = true;
-		await fetchStorage();
-		if (
-			scheduleDefault != "scheduleT1" &&
-			scheduleDefault != "scheduleT2"
-		) {
-			await delay(500);
-			initializeSearches(scheduleDesktop, scheduleMobile, scheduleMin, scheduleMax);
-		}
-	} else if (request.message === "device") {
-		const deviceTab = await app.tabs.query({
-			active: true,
-			currentWindow: true,
-		});
-		console.log(deviceTab[0].id);
-		const deviceId = deviceTab[0].id;
-		const deviceIndex = devices.indexOf(deviceId);
-		if (deviceIndex === -1) {
-			devices.push(deviceId);
-			await debug(deviceId);
-		} else {
-			devices.splice(deviceIndex, 1);
-			await detach(deviceId);
-		}
-	} else if (request.message === "scheduleUpdate") {
-		await fetchStorage();
-	}
+        runningSearch = true;
+        await fetchStorage();
+        if (
+            scheduleDefault != "scheduleT1" &&
+            scheduleDefault != "scheduleT2"
+        ) {
+            await delay(500);
+            initializeSearches(scheduleDesktop, scheduleMobile, scheduleMin, scheduleMax);
+        }
+    } else if (request.message === "device") {
+        const deviceTab = await app.tabs.query({
+            active: true,
+            currentWindow: true,
+        });
+        console.log(deviceTab[0].id);
+        const deviceId = deviceTab[0].id;
+        const deviceIndex = devices.indexOf(deviceId);
+        if (deviceIndex === -1) {
+            devices.push(deviceId);
+            await debug(deviceId);
+        } else {
+            devices.splice(deviceIndex, 1);
+            await detach(deviceId);
+        }
+    } else if (request.message === "scheduleUpdate") {
+        await fetchStorage();
+    }
+});
+
+
+// Trigger searches when rewards.bing.com loads
+app.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.url && tab.url.includes("https://brave.com/")) {
+        console.log("Rewards page loaded, triggering auto-search");
+        await fetchStorage();
+        if (!runningSearch && scheduleDefault != "scheduleT1") {
+            initializeSearches(scheduleDesktop, scheduleMobile, scheduleMin, scheduleMax);
+        }
+    }
 });
