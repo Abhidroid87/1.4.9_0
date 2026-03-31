@@ -8,12 +8,12 @@ app.runtime.onMessage.addListener(async function (
 		window.scrollBy(0, scroll);
 		let searchTextarea = document.getElementById("sb_form_q");
 		let submitButton = document.getElementById("sb_form_go");
-		let formElement = searchTextarea.closest("form");
-		// if (submitButton != undefined && submitButton != null) {
-		// 	submitButton.click();
-		// } else {
-		formElement.submit();
-		// }
+		if (submitButton != undefined && submitButton != null) {
+			submitButton.click();
+		} else {
+			let formElement = searchTextarea.closest("form");
+			formElement.submit();
+		}
 	} else if (request.message === "checkLogin") {
 		const loginButton = document.querySelector("#id_l.id_button.toolTip");
 	} else if (request.message === "menu") {
@@ -76,14 +76,17 @@ app.runtime.onMessage.addListener(async function (
 });
 
 async function typeWithDelay(textarea, text) {
+	textarea.focus();
 	textarea.value = "";
 	for (const char of text) {
 		const delayMs = Math.floor(Math.random() * (300 - 50 + 1)) + 50;
 		textarea.value += char;
+		textarea.dispatchEvent(new Event("input", { bubbles: true }));
 		await delay(delayMs);
 	}
 	if (textarea.value !== text) {
 		textarea.value = text;
+		textarea.dispatchEvent(new Event("input", { bubbles: true }));
 	}
 }
 

@@ -22,7 +22,6 @@ let niche = "random";
 let blinkTimer;
 const app = chrome || browser;
 const devices = [];
-const myURLs = ["https://www.google.com/"];
 
 app.runtime.onInstalled.addListener((e) => {
 	if (e.reason === "install") {
@@ -317,7 +316,7 @@ async function initializeSearches(desk, mob, min, max) {
             mob+=2;
         }
         desk+=2;
-        const tab = await app.tabs.create({url: "https://www.bing.com/"});
+        const tab = await app.tabs.create({url: "https://www.bing.com/images/search"});
         tabId = parseInt(tab.id);
         await delay(1000);
         await search(desk, min, max);
@@ -330,7 +329,7 @@ async function initializeSearches(desk, mob, min, max) {
 
     if (mob > 0 && runningSearch && desk == 0) {
         mob+=2;
-        const tab = await app.tabs.create({url: "https://www.bing.com/"});
+        const tab = await app.tabs.create({url: "https://www.bing.com/images/search"});
         tabId = parseInt(tab.id);
         await delay(1000);
         await searchMob(mob, min, max);
